@@ -1,6 +1,6 @@
 #include "main_frame.hpp"
 #include "wx/app.h"
-#include "tamandua.hpp"
+#include "tamandua/tamandua.hpp"
 #include "tamandua_box.hpp"
 #include "debug_gui.hpp"
 #include <string>

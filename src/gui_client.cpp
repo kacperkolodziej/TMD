@@ -2,7 +2,7 @@
 #include <boost/asio.hpp>
 #include "gui_client.hpp"
 #include "main_frame.hpp"
-#include "tamandua.hpp"
+#include "tamandua/tamandua.hpp"
 #include "debug_gui.hpp"
 #include <functional>
 #include <chrono>
