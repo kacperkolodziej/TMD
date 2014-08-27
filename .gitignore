@@ -2,3 +2,5 @@ CMakeCache.txt
 CMakeFiles
 bin/Debug/*
 bin/Release/*
+cmake_install.cmake
+Makefile
