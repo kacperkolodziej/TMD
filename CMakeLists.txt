@@ -13,13 +13,7 @@ find_package(Boost 1.49 COMPONENTS system REQUIRED)
 include_directories(
 	"${Boost_INCLUDE_DIR}"
 	"${PROJECT_SOURCE_DIR}/headers"
-	"/home/kacper/programowanie/CPP/Tamandua/headers"
 )
-
-link_directories(
-	"/home/kacper/programowanie/CPP/Tamandua/lib/Debug"
-)
-
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE bin/Release)
