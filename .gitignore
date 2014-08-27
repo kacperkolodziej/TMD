@@ -4,3 +4,5 @@ bin/Debug/*
 bin/Release/*
 cmake_install.cmake
 Makefile
+*.o
+*.swp
