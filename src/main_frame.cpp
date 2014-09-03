@@ -33,8 +33,8 @@ void main_frame::send_message(wxCommandEvent &event)
 {
 	wxString data = msg->GetValue();
 	msg->Clear();
-	tamandua::message msg(tamandua::message_type::standard_message, std::string(data.utf8_str()));
-	tb->client.send_message(msg);
+	std::string msg_body = std::string(data.utf8_str());
+	tb->client.send_message(msg_body);
 }
 
 void main_frame::connect(wxCommandEvent &event)
