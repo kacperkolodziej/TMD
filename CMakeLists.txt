@@ -10,8 +10,11 @@ include("${wxWidgets_USE_FILE}")
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.49 COMPONENTS system REQUIRED)
 
+find_package(OpenSSL REQUIRED)
+
 include_directories(
 	"${Boost_INCLUDE_DIR}"
+	"${OPENSSL_INCLUDE_DIR}"
 	"${PROJECT_SOURCE_DIR}/headers"
 )
 
@@ -32,9 +35,7 @@ add_executable(${EXEC_NAME}
 	src/tamandua_textctrl.cpp
 	main.cpp
 )
-target_link_libraries("${EXEC_NAME}" "${wxWidgets_LIBRARIES}")
-target_link_libraries("${EXEC_NAME}" "${Boost_LIBRARIES}")
-target_link_libraries("${EXEC_NAME}" tamandua)
+target_link_libraries("${EXEC_NAME}" "${wxWidgets_LIBRARIES}" "${OPENSSL_LIBRARIES}" "${Boost_LIBRARIES}" tamandua)
 
 if (UNIX)
 	install(TARGETS ${EXEC_NAME}
