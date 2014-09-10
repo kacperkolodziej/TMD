@@ -21,8 +21,8 @@ struct tamandua_box
 		client(io_service, context),
 		running(true)
 	{
-		context.set_verify_mode(boost::asio::ssl::verify_peer);
-		context.load_verify_file("ssl/tamandua_approved.crt");
+		context.load_verify_file("ssl/TamanduaCA.pem");
+		client.get_socket().set_verify_mode(boost::asio::ssl::verify_peer);
 	}
 
 	void turn_off()
