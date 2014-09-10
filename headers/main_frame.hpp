@@ -17,6 +17,9 @@ class main_frame :
 		wxButton *connect_button;
 		wxBoxSizer *sizer;
 		wxBoxSizer *connect_sizer;
+		wxGridSizer *info_sizer;
+		wxMenuBar *menubar;
+		wxStaticText *conn_lbl, *verify_lbl;
 
 		bool connected;
 		tamandua_box *tb;
@@ -25,11 +28,12 @@ class main_frame :
 			MSGS_CTRL = 1000,
 			MSG_CTRL,
 			PANEL,
-			SIZER,
 			CON_HOST_TEXT,
 			CON_PORT_TEXT,
 			CON_BTN,
-			FUNNY_BTN
+			FUNNY_BTN,
+			TMD_MENU_RLIST,
+			TMD_MENU_PLIST
 		};
 
 		main_frame();
@@ -50,6 +54,8 @@ class main_frame :
 		void connecting_failed_();
 		void message_sent_();
 		void message_undelivered_();
+		void context_verified_true_();
+		void context_verified_false_();
 
 };
 
