@@ -2,6 +2,7 @@
 #define MAIN_FRAME_HPP
 #include "wx/wx.h"
 #include "wx/textctrl.h"
+#include "chat_notebook.hpp"
 #include "tamandua_textctrl.hpp"
 #include "gui_client.hpp"
 #include "tamandua_box.hpp"
@@ -12,7 +13,7 @@ class main_frame :
 {
 	private:
 		wxPanel *panel;
-		tamandua_textctrl *msgs;
+		chat_notebook *notebook;
 		wxTextCtrl *msg, *connect_host, *connect_port;
 		wxButton *connect_button;
 		wxBoxSizer *sizer;
@@ -26,7 +27,7 @@ class main_frame :
 		tamandua_box *tb;
 	public:
 		enum {
-			MSGS_CTRL = 1000,
+			CHAT_NOTEBOOK = 1000,
 			MSG_CTRL,
 			PANEL,
 			CON_HOST_TEXT,

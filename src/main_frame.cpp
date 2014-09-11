@@ -14,7 +14,7 @@ main_frame::main_frame() :
 	verified(true)
 {
 	panel = new wxPanel(this);
-	msgs = new tamandua_textctrl(panel, MSGS_CTRL);
+	notebook = new chat_notebook(panel, CHAT_NOTEBOOK);
 	msg = new wxTextCtrl(panel, MSG_CTRL, wxEmptyString, wxPoint(0,0), wxDefaultSize, wxTE_MULTILINE | wxTE_PROCESS_ENTER);
 	sizer = new wxBoxSizer(wxVERTICAL);
 	connect_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -29,7 +29,7 @@ main_frame::main_frame() :
 	connect_sizer->Add(connect_button,1);
 	sizer->Add(connect_sizer, 0, wxALL | wxEXPAND, 10);
 	sizer->Add(info_sizer, 0, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
-	sizer->Add(msgs, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
+	sizer->Add(notebook, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
 	sizer->Add(msg, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
 
 	conn_lbl = new wxStaticText(panel, wxID_ANY, wxT("Not connected"));
@@ -94,46 +94,10 @@ void main_frame::connect(wxCommandEvent &event)
 		tamandua::client &cl = tb->client;
 		bool local_running = true;
 		do {
-			// start
 			auto msg_pair = cl.get_next_message();
 			wxString author = wxString::FromUTF8(msg_pair.first.data());
 			wxString msg_body = wxString::FromUTF8(msg_pair.second.body.data());
-			tamandua::message &msg = msg_pair.second;
-			switch (msg.header.type)
-			{
-				case tamandua::message_type::info_message:
-					Debug("info: ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_info, msgs, msg_body));
-					break;
-
-				case tamandua::message_type::error_message:
-					Debug("error: ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_error, msgs, msg_body));
-					break;
-
-				case tamandua::message_type::warning_message:
-					Debug("warning: ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_warning, msgs, msg_body));
-					break;
-
-				case tamandua::message_type::private_message:
-					Debug("@", author, ": ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_private_message, msgs, (msg_pair.second.header.author == cl.get_id()), author, msg_body));
-					break;
-
-				case tamandua::message_type::quit_message:
-					Debug("Received quit message");
-					break;
-				
-				case tamandua::message_type::standard_message:
-					Debug(author, ": ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_message, msgs, author, msg_body));
-					break;
-
-				default:
-					break;
-			}
-
+			notebook->add_message(msg_pair);
 			tb->running_lock.lock();
 			local_running = tb->running;
 			tb->running_lock.unlock();
@@ -213,9 +177,6 @@ void main_frame::context_verified_false_()
 }
 
 BEGIN_EVENT_TABLE(main_frame, wxFrame)
-//	EVT_TEXT_ENTER(CON_HOST_TEXT, main_frame::connect)
-//	EVT_TEXT_ENTER(CON_PORT_TEXT, main_frame::connect)
 	EVT_TEXT_ENTER(MSG_CTRL, main_frame::send_message)
-	EVT_TEXT_URL(MSGS_CTRL, main_frame::msgs_url)
 	EVT_BUTTON(CON_BTN, main_frame::connect)
 END_EVENT_TABLE()
