@@ -49,7 +49,8 @@ void main_frame::send_message(wxCommandEvent &event)
 	wxString data = msg->GetValue();
 	msg->Clear();
 	std::string msg_body = std::string(data.utf8_str());
-	tb->client.send_message(msg_body);
+	tamandua::id_number_t group = notebook->get_current_group_id();
+	tb->client.send_message(msg_body, group);
 }
 
 void main_frame::connect(wxCommandEvent &event)
@@ -95,9 +96,7 @@ void main_frame::connect(wxCommandEvent &event)
 		bool local_running = true;
 		do {
 			auto msg_pair = cl.get_next_message();
-			wxString author = wxString::FromUTF8(msg_pair.first.data());
-			wxString msg_body = wxString::FromUTF8(msg_pair.second.body.data());
-			notebook->add_message(msg_pair);
+			wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&chat_notebook::add_message, notebook, msg_pair));
 			tb->running_lock.lock();
 			local_running = tb->running;
 			tb->running_lock.unlock();
