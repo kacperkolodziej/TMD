@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGES_RELEASE} -DRELEASE")
 
-find_package(wxWidgets COMPONENTS core base REQUIRED)
+find_package(wxWidgets COMPONENTS core base richtext REQUIRED)
 include("${wxWidgets_USE_FILE}")
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.49 COMPONENTS system REQUIRED)
