@@ -9,7 +9,9 @@
 wxDECLARE_APP(gui_client);
 
 main_frame::main_frame() :
-	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(400,700))
+	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(400,700)),
+	connected(false),
+	verified(true)
 {
 	panel = new wxPanel(this);
 	msgs = new tamandua_textctrl(panel, MSGS_CTRL);
@@ -36,10 +38,10 @@ main_frame::main_frame() :
 	info_sizer->Add(verify_lbl, 0, wxALL | wxEXPAND, 5);
 
 	// menu bar
-	menubar = new wxMenuBar;
+	//menubar = new wxMenuBar;
 
 	// TMD menu
-	wxMenu *tmd_menu = new wxMenu;
+	//wxMenu *tmd_menu = new wxMenu;
 }
 
 void main_frame::send_message(wxCommandEvent &event)
@@ -65,15 +67,21 @@ void main_frame::connect(wxCommandEvent &event)
 
 	tb->client.get_socket().set_verify_callback([this](bool pv, boost::asio::ssl::verify_context &ctx)
 	{
-		Debug("Verification callback!");
 		char subject_name[256];
 		X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
 		X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
 		Debug("X509: ", subject_name);
 		if (pv)
+		{
+			if (verified)
+				verified = true;
+
 			context_verified_true_();
-		else
+		} else
+		{
+			verified = false;
 			context_verified_false_();
+		}
 
 		return pv;
 	});
@@ -110,16 +118,19 @@ void main_frame::connect(wxCommandEvent &event)
 
 				case tamandua::message_type::private_message:
 					Debug("@", author, ": ", msg_body);
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_private_message, msgs, author, msg_body));
+					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_private_message, msgs, (msg_pair.second.header.author == cl.get_id()), author, msg_body));
 					break;
 
 				case tamandua::message_type::quit_message:
-					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_info, msgs, wxT("User ") + author + wxT(" quitted!")));
+					Debug("Received quit message");
 					break;
 				
 				case tamandua::message_type::standard_message:
 					Debug(author, ": ", msg_body);
 					wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&tamandua_textctrl::add_message, msgs, author, msg_body));
+					break;
+
+				default:
 					break;
 			}
 
@@ -134,11 +145,11 @@ void main_frame::disconnect(wxCommandEvent &event)
 {
 	if (tb->client.is_connected())
 	{
-		tb->client.send_quit_message();
 		tb->client.disconnect();
 		tb->turn_off();
 		tb->io_service_thread.join();
 		tb->reader_thread.join();
+		disconnect_callback_(tamandua::ok);
 	}
 }
 
@@ -152,15 +163,11 @@ void main_frame::connecting_succeeded_()
 {
 	connected = true;
 	Debug("Connected to server!");
-	wxString info(wxT("Connected to server!"), wxMBConvUTF8());
-	msgs->add_info(info);
 }
 
 void main_frame::connecting_failed_()
 {
 	Debug("Connecting failed!");
-	wxString error(wxT("Connecting failed!"), wxMBConvUTF8());
-	msgs->add_error(error);
 }
 
 void main_frame::message_sent_()
@@ -170,21 +177,20 @@ void main_frame::message_sent_()
 
 void main_frame::message_undelivered_()
 {
-	wxString error(wxT("Message undelivered!"), wxMBConvUTF8());
-	msgs->add_error(error);
 }
 
 void main_frame::connect_callback_(tamandua::status st)
 {
 	if (st == tamandua::status::ok)
 	{
-		msgs->add_info(wxT("Connected to server!"));
+		connected = true;
 		connect_button->Unbind(wxEVT_BUTTON, &main_frame::connect, this);
 		connect_button->Bind(wxEVT_BUTTON, &main_frame::disconnect, this);
 		connect_button->SetLabel(wxT("Disconnect"));
+		conn_lbl->SetLabel(wxT("Connected"));
 	} else
 	{
-		msgs->add_error(wxT("Connecting failed!"));
+		conn_lbl->SetLabel(wxT("Connecting failed!"));
 	}
 }
 
@@ -192,10 +198,10 @@ void main_frame::disconnect_callback_(tamandua::status st)
 {
 	if (st == tamandua::status::ok)
 	{
-		msgs->add_info(wxT("Disconnected"));
 		connect_button->Unbind(wxEVT_BUTTON, &main_frame::disconnect, this);
 		connect_button->Bind(wxEVT_BUTTON, &main_frame::connect, this);
 		connect_button->SetLabel(wxString(wxT("Connect")));
+		conn_lbl->SetLabel(wxT("Disconnected"));
 	}
 }
 

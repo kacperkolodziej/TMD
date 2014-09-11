@@ -18,10 +18,11 @@ class main_frame :
 		wxBoxSizer *sizer;
 		wxBoxSizer *connect_sizer;
 		wxGridSizer *info_sizer;
-		wxMenuBar *menubar;
+		//wxMenuBar *menubar;
 		wxStaticText *conn_lbl, *verify_lbl;
 
 		bool connected;
+		bool verified;
 		tamandua_box *tb;
 	public:
 		enum {
