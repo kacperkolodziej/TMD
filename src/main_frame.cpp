@@ -159,17 +159,6 @@ void main_frame::msgs_url(wxTextUrlEvent &event)
 		wxMessageBox(wxT("You clicked URL address, but you didn't specified your web browser in Tamandua Client options.\nIt was probably because Tamandua Client has not options :D"), wxT("You clicked URL address"), wxICON_INFORMATION);
 }
 
-void main_frame::connecting_succeeded_()
-{
-	connected = true;
-	Debug("Connected to server!");
-}
-
-void main_frame::connecting_failed_()
-{
-	Debug("Connecting failed!");
-}
-
 void main_frame::message_sent_()
 {
 	Debug("Message sent!");
