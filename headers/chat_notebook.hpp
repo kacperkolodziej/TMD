@@ -17,8 +17,16 @@ class chat_notebook :
 			wxPanel *panel;
 			wxBoxSizer *sizer;
 			tamandua_textctrl *msgs;
+
+			tab_elements() :
+				tab_index(-1),
+				panel(nullptr),
+				sizer(nullptr),
+				msgs(nullptr)
+			{}
 		};
 		std::map<tamandua::id_number_t, tab_elements> tabs_;
+		std::map<int, tamandua::id_number_t> groups_ids_;
 
 	public:
 		chat_notebook(wxWindow *p, wxWindowID id) :
@@ -28,6 +36,7 @@ class chat_notebook :
 		void new_group(tamandua::id_number_t, wxString);
 		void remove_group(tamandua::id_number_t);
 		tab_elements get_group(tamandua::id_number_t);
+		tamandua::id_number_t get_current_group_id();
 		void add_message(std::pair<std::string, tamandua::message>);
 
 
