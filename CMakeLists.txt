@@ -16,6 +16,7 @@ include_directories(
 	"${Boost_INCLUDE_DIR}"
 	"${OPENSSL_INCLUDE_DIR}"
 	"${PROJECT_SOURCE_DIR}/headers"
+	"${PROJECT_SOURCE_DIR}/resources"
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/Debug)
@@ -30,11 +31,13 @@ add_executable(${EXEC_NAME}
 	headers/tamandua_textctrl.hpp
 	headers/tamandua_box.hpp
 	headers/chat_notebook.hpp
+	headers/list_frame.hpp
 	src/debug_gui.cpp
 	src/gui_client.cpp
 	src/main_frame.cpp
 	src/tamandua_textctrl.cpp
 	src/chat_notebook.cpp
+	src/list_frame.cpp
 	main.cpp
 )
 target_link_libraries("${EXEC_NAME}" "${wxWidgets_LIBRARIES}" "${OPENSSL_LIBRARIES}" "${Boost_LIBRARIES}" tamandua)
