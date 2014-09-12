@@ -87,3 +87,17 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 			break;
 	}
 }
+
+void chat_notebook::next_page()
+{
+	int selection = GetSelection();
+	size_t num = GetPageCount();
+	SetSelection((selection + 1) % num);
+}
+
+void chat_notebook::prev_page()
+{
+	int selection = GetSelection();
+	size_t num = GetPageCount();
+	SetSelection((selection == 0) ? num-1 : (selection - 1) % num);
+}

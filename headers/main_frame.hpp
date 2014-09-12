@@ -43,17 +43,15 @@ class main_frame :
 		void connect(wxCommandEvent &);
 		void send_message(wxCommandEvent &);
 		void disconnect(wxCommandEvent &);
-		void msgs_url(wxTextUrlEvent &);
-
 		void connect_callback_(tamandua::status);
 		void disconnect_callback_(tamandua::status);
-		void message_received_callback_(tamandua::status);
+
+		void key_page_up();
+		void key_page_down();
 
 	private:
 		DECLARE_EVENT_TABLE();
 
-		void message_sent_();
-		void message_undelivered_();
 		void context_verified_true_();
 		void context_verified_false_();
 

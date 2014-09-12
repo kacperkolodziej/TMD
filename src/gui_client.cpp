@@ -14,3 +14,26 @@ bool gui_client::OnInit()
 	return true;
 }
 
+int gui_client::FilterEvent(wxEvent &evt)
+{
+	if (evt.GetEventType() == wxEVT_KEY_DOWN)
+	{
+		return on_key_down(static_cast<wxKeyEvent&>(evt));
+	}
+
+	return -1;
+}
+
+int gui_client::on_key_down(wxKeyEvent &evt)
+{
+	if (evt.GetKeyCode() == WXK_PAGEUP)
+		frame->key_page_up();
+
+	else if (evt.GetKeyCode() == WXK_PAGEDOWN)
+		frame->key_page_down();
+	
+	else
+		return -1;
+
+	return 1;
+}

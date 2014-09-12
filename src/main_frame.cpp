@@ -63,8 +63,6 @@ void main_frame::connect(wxCommandEvent &event)
 		std::bind(&main_frame::connect_callback_, this, std::placeholders::_1));
 	tb->client.add_event_handler(tamandua::event_type::connecting_failed,
 		std::bind(&main_frame::connect_callback_, this, std::placeholders::_1));
-	tb->client.add_event_handler(tamandua::event_type::message_received,
-		std::bind(&main_frame::message_received_callback_, this, std::placeholders::_1));
 
 	tb->client.get_socket().set_verify_callback([this](bool pv, boost::asio::ssl::verify_context &ctx)
 	{
@@ -116,21 +114,6 @@ void main_frame::disconnect(wxCommandEvent &event)
 	}
 }
 
-void main_frame::msgs_url(wxTextUrlEvent &event)
-{
-	if (event.GetMouseEvent().Button(wxMOUSE_BTN_LEFT))
-		wxMessageBox(wxT("You clicked URL address, but you didn't specified your web browser in Tamandua Client options.\nIt was probably because Tamandua Client has not options :D"), wxT("You clicked URL address"), wxICON_INFORMATION);
-}
-
-void main_frame::message_sent_()
-{
-	Debug("Message sent!");
-}
-
-void main_frame::message_undelivered_()
-{
-}
-
 void main_frame::connect_callback_(tamandua::status st)
 {
 	if (st == tamandua::status::ok)
@@ -157,8 +140,14 @@ void main_frame::disconnect_callback_(tamandua::status st)
 	}
 }
 
-void main_frame::message_received_callback_(tamandua::status st)
+void main_frame::key_page_up()
 {
+	notebook->next_page();
+}
+
+void main_frame::key_page_down()
+{
+	notebook->prev_page();
 }
 
 void main_frame::context_verified_true_()

@@ -30,7 +30,7 @@ class chat_notebook :
 
 	public:
 		chat_notebook(wxWindow *p, wxWindowID id) :
-			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_LEFT)
+			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM)
 		{}
 
 		void new_group(tamandua::id_number_t, wxString);
@@ -39,7 +39,8 @@ class chat_notebook :
 		tamandua::id_number_t get_current_group_id();
 		void add_message(std::pair<std::string, tamandua::message>);
 
-
+		void next_page();
+		void prev_page();
 };
 
 #endif

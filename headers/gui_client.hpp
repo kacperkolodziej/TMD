@@ -12,6 +12,8 @@ class gui_client :
 		main_frame *frame;
 	public:
 		virtual bool OnInit();
+		int FilterEvent(wxEvent &);
+		int on_key_down(wxKeyEvent &);
 		main_frame * GetMainFrame()
 		{
 			return frame;
