@@ -15,6 +15,7 @@ class main_frame :
 		wxPanel *panel;
 		chat_notebook *notebook;
 		wxTextCtrl *msg, *connect_host, *connect_port;
+		wxString last_msg_content;
 		wxButton *connect_button;
 		wxBoxSizer *sizer;
 		wxBoxSizer *connect_sizer;
@@ -48,6 +49,7 @@ class main_frame :
 
 		void key_page_up();
 		void key_page_down();
+		void key_up();
 
 	private:
 		DECLARE_EVENT_TABLE();

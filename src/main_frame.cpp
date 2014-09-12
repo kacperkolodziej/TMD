@@ -1,5 +1,6 @@
 #include "main_frame.hpp"
 #include "wx/app.h"
+#include "wx/mstream.h"
 #include "tamandua/tamandua.hpp"
 #include "tamandua_box.hpp"
 #include "debug_gui.hpp"
@@ -14,8 +15,8 @@ main_frame::main_frame() :
 	verified(true)
 {
 	panel = new wxPanel(this);
-	notebook = new chat_notebook(panel, CHAT_NOTEBOOK);
 	msg = new wxTextCtrl(panel, MSG_CTRL, wxEmptyString, wxPoint(0,0), wxDefaultSize, wxTE_MULTILINE | wxTE_PROCESS_ENTER);
+	notebook = new chat_notebook(panel, CHAT_NOTEBOOK, msg);
 	sizer = new wxBoxSizer(wxVERTICAL);
 	connect_sizer = new wxBoxSizer(wxHORIZONTAL);
 	connect_host = new wxTextCtrl(panel, CON_HOST_TEXT, wxT("localhost"), wxPoint(0,0), wxDefaultSize, wxTE_PROCESS_ENTER);
@@ -46,9 +47,9 @@ main_frame::main_frame() :
 
 void main_frame::send_message(wxCommandEvent &event)
 {
-	wxString data = msg->GetValue();
+	last_msg_content = msg->GetValue();
 	msg->Clear();
-	std::string msg_body = std::string(data.utf8_str());
+	std::string msg_body = std::string(last_msg_content.utf8_str());
 	tamandua::id_number_t group = notebook->get_current_group_id();
 	tb->client.send_message(msg_body, group);
 }
@@ -84,7 +85,7 @@ void main_frame::connect(wxCommandEvent &event)
 
 		return pv;
 	});
-
+	
 	tb->client.connect(host, port);
 	tb->io_service_thread = std::thread([this]() {
 		tb->io_service.run();
@@ -142,12 +143,17 @@ void main_frame::disconnect_callback_(tamandua::status st)
 
 void main_frame::key_page_up()
 {
-	notebook->next_page();
+	notebook->next_tab();
 }
 
 void main_frame::key_page_down()
 {
-	notebook->prev_page();
+	notebook->prev_tab();
+}
+
+void main_frame::key_up()
+{
+	msg->SetValue(last_msg_content);
 }
 
 void main_frame::context_verified_true_()
