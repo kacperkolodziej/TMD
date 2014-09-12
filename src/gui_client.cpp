@@ -31,6 +31,9 @@ int gui_client::on_key_down(wxKeyEvent &evt)
 
 	else if (evt.GetKeyCode() == WXK_PAGEDOWN)
 		frame->key_page_down();
+
+	else if (evt.GetKeyCode() == WXK_UP)
+		frame->key_up();
 	
 	else
 		return -1;
