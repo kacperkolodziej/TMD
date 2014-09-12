@@ -90,7 +90,11 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 			new_tab(msg.header.group, msg.body);
 			break;
 
+		case tamandua::message_type::group_leave_message:
+			remove_tab(msg.header.group);
+
 		default:
+			Debug("Unsupported message type: ", msg.header.type);
 			break;
 	}
 }
