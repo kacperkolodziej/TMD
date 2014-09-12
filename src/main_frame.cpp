@@ -75,18 +75,21 @@ void main_frame::connect(wxCommandEvent &event)
 		{
 			if (verified)
 				verified = true;
-
-			context_verified_true_();
 		} else
 		{
 			verified = false;
-			context_verified_false_();
 		}
 
 		return pv;
 	});
 	
 	tb->client.connect(host, port);
+	
+	if (verified)
+		context_verified_true_();
+	else
+		context_verified_false_();
+
 	tb->io_service_thread = std::thread([this]() {
 		tb->io_service.run();
 	});
@@ -159,15 +162,13 @@ void main_frame::key_up()
 void main_frame::context_verified_true_()
 {
 	Debug("Verification: true");
-	//verify_lbl->SetForegroundColour(wxColour(0x05, 0xff, 0x00));
-	//verify_lbl->SetLabel("Verified certificate!");
+	verify_lbl->SetLabel("Verified certificate!");
 }
 
 void main_frame::context_verified_false_()
 {
 	Debug("Verification: false");
-	//verify_lbl->SetForegroundColour(wxColour(0xff, 0x00, 0x00));
-	//verify_lbl->SetLabel("Not verified certificate!");
+	verify_lbl->SetLabel("Not verified certificate!");
 }
 
 BEGIN_EVENT_TABLE(main_frame, wxFrame)
