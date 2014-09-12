@@ -6,6 +6,7 @@
 #include "tamandua_textctrl.hpp"
 #include "gui_client.hpp"
 #include "tamandua_box.hpp"
+#include "list_frame.hpp"
 #include <initializer_list>
 
 class main_frame :
@@ -20,7 +21,7 @@ class main_frame :
 		wxBoxSizer *sizer;
 		wxBoxSizer *connect_sizer;
 		wxGridSizer *info_sizer;
-		//wxMenuBar *menubar;
+		wxMenuBar *menubar;
 		wxStaticText *conn_lbl, *verify_lbl;
 
 		bool connected;
@@ -50,6 +51,9 @@ class main_frame :
 		void key_page_up();
 		void key_page_down();
 		void key_up();
+
+		void show_rlist(wxCommandEvent &);
+		void show_plist(wxCommandEvent &);
 
 	private:
 		DECLARE_EVENT_TABLE();

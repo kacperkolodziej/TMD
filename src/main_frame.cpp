@@ -39,10 +39,16 @@ main_frame::main_frame() :
 	info_sizer->Add(verify_lbl, 0, wxALL | wxEXPAND, 5);
 
 	// menu bar
-	//menubar = new wxMenuBar;
+	menubar = new wxMenuBar;
 
 	// TMD menu
-	//wxMenu *tmd_menu = new wxMenu;
+	wxMenu *tmd_menu = new wxMenu;
+	tmd_menu->Append(TMD_MENU_RLIST, wxT("Rooms list\tCtrl+R"));
+	tmd_menu->Append(TMD_MENU_PLIST, wxT("Participants list\tCtrl+P"));
+
+	menubar->Append(tmd_menu, wxT("TMD"));
+
+	SetMenuBar(menubar);
 }
 
 void main_frame::send_message(wxCommandEvent &event)
@@ -159,6 +165,18 @@ void main_frame::key_up()
 	msg->SetValue(last_msg_content);
 }
 
+void main_frame::show_rlist(wxCommandEvent &event)
+{
+	list_frame *rooms_list = new list_frame(this, wxID_ANY, wxT("Rooms list"), tb->client.get_rooms_list());
+	rooms_list->Show();
+}
+
+void main_frame::show_plist(wxCommandEvent &event)
+{
+	list_frame *participants_list = new list_frame(this, wxID_ANY, wxT("Participants list"), tb->client.get_participants_list());
+	participants_list->Show();
+}
+
 void main_frame::context_verified_true_()
 {
 	Debug("Verification: true");
@@ -174,4 +192,6 @@ void main_frame::context_verified_false_()
 BEGIN_EVENT_TABLE(main_frame, wxFrame)
 	EVT_TEXT_ENTER(MSG_CTRL, main_frame::send_message)
 	EVT_BUTTON(CON_BTN, main_frame::connect)
+	EVT_MENU(TMD_MENU_RLIST, main_frame::show_rlist)
+	EVT_MENU(TMD_MENU_PLIST, main_frame::show_plist)
 END_EVENT_TABLE()
