@@ -13,12 +13,14 @@ class chat_notebook :
 	private:
 		struct tab_elements
 		{
+			tamandua::id_number_t group_id;
 			int tab_index;
 			wxPanel *panel;
 			wxBoxSizer *sizer;
 			tamandua_textctrl *msgs;
 
-			tab_elements() :
+			tab_elements(tamandua::id_number_t gr_id = 0) :
+				group_id(gr_id),
 				tab_index(-1),
 				panel(nullptr),
 				sizer(nullptr),
@@ -28,19 +30,26 @@ class chat_notebook :
 		std::map<tamandua::id_number_t, tab_elements> tabs_;
 		std::map<int, tamandua::id_number_t> groups_ids_;
 
+		wxTextCtrl *msg_input;
+
 	public:
-		chat_notebook(wxWindow *p, wxWindowID id) :
-			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM)
+		chat_notebook(wxWindow *p, wxWindowID id, wxTextCtrl *m) :
+			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM),
+			msg_input(m)
 		{}
 
-		void new_group(tamandua::id_number_t, wxString);
-		void remove_group(tamandua::id_number_t);
-		tab_elements get_group(tamandua::id_number_t);
+		void init_tabs();
+		void new_tab(tamandua::id_number_t, wxString);
+		void remove_tab(tamandua::id_number_t);
+		tab_elements get_tab(tamandua::id_number_t);
 		tamandua::id_number_t get_current_group_id();
 		void add_message(std::pair<std::string, tamandua::message>);
 
-		void next_page();
-		void prev_page();
+		void next_tab();
+		void prev_tab();
+
+	private:
+		void refresh_ids_();
 };
 
 #endif
