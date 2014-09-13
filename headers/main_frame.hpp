@@ -37,7 +37,9 @@ class main_frame :
 			CON_BTN,
 			FUNNY_BTN,
 			TMD_MENU_RLIST,
-			TMD_MENU_PLIST
+			TMD_MENU_PLIST,
+			LISTBOX_ROOMS,
+			LISTBOX_PARTICIPANTS
 		};
 
 		main_frame();
@@ -54,6 +56,7 @@ class main_frame :
 
 		void show_rlist(wxCommandEvent &);
 		void show_plist(wxCommandEvent &);
+		void rooms_dbclicked(wxCommandEvent &);
 		void set_rlist();
 		void set_plist();
 

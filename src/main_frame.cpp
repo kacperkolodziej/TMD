@@ -5,6 +5,7 @@
 #include "tamandua_box.hpp"
 #include "debug_gui.hpp"
 #include <string>
+#include <sstream>
 #include <functional>
 
 wxDECLARE_APP(gui_client);
@@ -25,8 +26,8 @@ main_frame::main_frame() :
 	connect_button = new wxButton(panel, CON_BTN, wxT("Connect"));
 	cols_sizer = new wxBoxSizer(wxHORIZONTAL);
 	msg_sizer = new wxBoxSizer(wxVERTICAL);
-	rooms_list = new wxListBox(panel, wxID_ANY, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
-	participants_list = new wxListBox(panel, wxID_ANY, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
+	rooms_list = new wxListBox(panel, LISTBOX_ROOMS, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
+	participants_list = new wxListBox(panel, LISTBOX_PARTICIPANTS, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
 	statusbar->SetFieldsCount(2);
 
 	panel->SetSizer(main_sizer);
@@ -189,6 +190,16 @@ void main_frame::show_plist(wxCommandEvent &event)
 	set_plist();
 }
 
+void main_frame::rooms_dbclicked(wxCommandEvent &event)
+{
+	int sel = rooms_list->GetSelection();
+	wxString room = rooms_list->GetString(sel);
+	std::stringstream stream;
+	stream << "/room \"" << room.ToStdString() << "\"";
+	std::string msg = stream.str();
+	tb->client.send_message(msg);
+}
+
 void main_frame::set_rlist()
 {
 	rooms_list->Clear();
@@ -224,4 +235,5 @@ BEGIN_EVENT_TABLE(main_frame, wxFrame)
 	EVT_BUTTON(CON_BTN, main_frame::connect)
 	EVT_MENU(TMD_MENU_RLIST, main_frame::show_rlist)
 	EVT_MENU(TMD_MENU_PLIST, main_frame::show_plist)
+	EVT_LISTBOX_DCLICK(LISTBOX_ROOMS, main_frame::rooms_dbclicked)
 END_EVENT_TABLE()
