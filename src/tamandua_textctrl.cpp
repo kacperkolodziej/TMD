@@ -9,11 +9,11 @@ void tamandua_textctrl::add_message(wxString author, wxString msg)
 	write_lock_.lock();
 	Colour(0x0b, 0x6c, 0xa1);
 	BeginBold();
-	WriteText(author);
+	AppendText(author);
 	EndBold();
 	EndColour();
-	WriteText(": ");
-	WriteText(msg);
+	AppendText(": ");
+	AppendText(msg);
 	Nl();
 	write_lock_.unlock();
 }
@@ -23,7 +23,7 @@ void tamandua_textctrl::add_info(wxString info)
 	write_lock_.lock();
 	Colour(0x00, 0x99, 0);
 	BeginBold();
-	WriteText(info);
+	AppendText(info);
 	EndBold();
 	EndColour();
 	Nl();
@@ -35,7 +35,7 @@ void tamandua_textctrl::add_error(wxString error)
 	write_lock_.lock();
 	Colour(0xcc, 0, 0);
 	BeginItalic();
-	WriteText(error);
+	AppendText(error);
 	EndItalic();
 	EndColour();
 	Nl();
@@ -46,7 +46,7 @@ void tamandua_textctrl::add_warning(wxString warning)
 {
 	write_lock_.lock();
 	Colour(0xed, 0x7b, 0x00);
-	WriteText(warning);
+	AppendText(warning);
 	EndColour();
 	Nl();
 	write_lock_.unlock();
@@ -57,12 +57,12 @@ void tamandua_textctrl::add_private_message(bool mymsg, wxString author, wxStrin
 	write_lock_.lock();
 	Colour(0x4e, 0x13, 0x08);
 	if (mymsg)
-		WriteText(wxT("<-"));
+		AppendText(wxT("<-"));
 	else
-		WriteText(wxT("->"));
-	WriteText(author + wxT(": "));
+		AppendText(wxT("->"));
+	AppendText(author + wxT(": "));
 	EndColour();
-	WriteText(pm);
+	AppendText(pm);
 	Nl();
 	write_lock_.unlock();
 }
