@@ -10,33 +10,39 @@
 wxDECLARE_APP(gui_client);
 
 main_frame::main_frame() :
-	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(400,700)),
+	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(600,800)),
 	connected(false),
 	verified(true)
 {
 	panel = new wxPanel(this);
 	msg = new wxTextCtrl(panel, MSG_CTRL, wxEmptyString, wxPoint(0,0), wxDefaultSize, wxTE_MULTILINE | wxTE_PROCESS_ENTER);
 	notebook = new chat_notebook(panel, CHAT_NOTEBOOK, msg);
-	sizer = new wxBoxSizer(wxVERTICAL);
+	statusbar = new wxStatusBar(this, wxID_ANY);
+	main_sizer = new wxBoxSizer(wxVERTICAL);
 	connect_sizer = new wxBoxSizer(wxHORIZONTAL);
 	connect_host = new wxTextCtrl(panel, CON_HOST_TEXT, wxT("localhost"), wxPoint(0,0), wxDefaultSize, wxTE_PROCESS_ENTER);
 	connect_port = new wxTextCtrl(panel, CON_PORT_TEXT, wxT("5000"), wxPoint(0,0), wxDefaultSize, wxTE_PROCESS_ENTER);
 	connect_button = new wxButton(panel, CON_BTN, wxT("Connect"));
-	info_sizer = new wxGridSizer(2, 5, 5);
+	cols_sizer = new wxBoxSizer(wxHORIZONTAL);
+	msg_sizer = new wxBoxSizer(wxVERTICAL);
+	rooms_list = new wxListBox(panel, wxID_ANY, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
+	participants_list = new wxListBox(panel, wxID_ANY, wxPoint(0,0), wxDefaultSize, 0, NULL, wxLB_SINGLE | wxLB_SORT);
+	statusbar->SetFieldsCount(2);
 
-	panel->SetSizer(sizer);
+	panel->SetSizer(main_sizer);
 	connect_sizer->Add(connect_host,1);
 	connect_sizer->Add(connect_port,1);
 	connect_sizer->Add(connect_button,1);
-	sizer->Add(connect_sizer, 0, wxALL | wxEXPAND, 10);
-	sizer->Add(info_sizer, 0, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
-	sizer->Add(notebook, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
-	sizer->Add(msg, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 10);
+	main_sizer->Add(connect_sizer, 0, wxALL | wxEXPAND, 10);
+	main_sizer->Add(cols_sizer, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
 
-	conn_lbl = new wxStaticText(panel, wxID_ANY, wxT("Not connected"));
-	verify_lbl = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-	info_sizer->Add(conn_lbl, 0, wxALL | wxEXPAND, 5);
-	info_sizer->Add(verify_lbl, 0, wxALL | wxEXPAND, 5);
+	cols_sizer->Add(rooms_list, 2, wxALL | wxEXPAND, 5);
+	cols_sizer->Add(msg_sizer, 6, wxALL | wxEXPAND, 5);
+	cols_sizer->Add(participants_list, 2, wxALL | wxEXPAND, 5);
+	msg_sizer->Add(notebook, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 5);
+	msg_sizer->Add(msg, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 5);
+
+	statusbar->SetStatusText(wxT("Not connected"));
 
 	// menu bar
 	menubar = new wxMenuBar;
@@ -49,6 +55,7 @@ main_frame::main_frame() :
 	menubar->Append(tmd_menu, wxT("TMD"));
 
 	SetMenuBar(menubar);
+	SetStatusBar(statusbar);
 }
 
 void main_frame::send_message(wxCommandEvent &event)
@@ -96,6 +103,9 @@ void main_frame::connect(wxCommandEvent &event)
 	else
 		context_verified_false_();
 
+	set_rlist();
+	set_plist();
+
 	tb->io_service_thread = std::thread([this]() {
 		tb->io_service.run();
 	});
@@ -132,10 +142,10 @@ void main_frame::connect_callback_(tamandua::status st)
 		connect_button->Unbind(wxEVT_BUTTON, &main_frame::connect, this);
 		connect_button->Bind(wxEVT_BUTTON, &main_frame::disconnect, this);
 		connect_button->SetLabel(wxT("Disconnect"));
-		conn_lbl->SetLabel(wxT("Connected"));
+		statusbar->SetStatusText(wxT("Connected"), 0);
 	} else
 	{
-		conn_lbl->SetLabel(wxT("Connecting failed!"));
+		statusbar->SetStatusText(wxT("Connecting failed!"), 0);
 	}
 }
 
@@ -146,7 +156,7 @@ void main_frame::disconnect_callback_(tamandua::status st)
 		connect_button->Unbind(wxEVT_BUTTON, &main_frame::disconnect, this);
 		connect_button->Bind(wxEVT_BUTTON, &main_frame::connect, this);
 		connect_button->SetLabel(wxString(wxT("Connect")));
-		conn_lbl->SetLabel(wxT("Disconnected"));
+		statusbar->SetStatusText(wxT("Disconnected"));
 	}
 }
 
@@ -167,26 +177,46 @@ void main_frame::key_up()
 
 void main_frame::show_rlist(wxCommandEvent &event)
 {
-	list_frame *rooms_list = new list_frame(this, wxID_ANY, wxT("Rooms list"), tb->client.get_rooms_list());
-	rooms_list->Show();
+	//list_frame *rooms_list = new list_frame(this, wxID_ANY, wxT("Rooms list"), tb->client.get_rooms_list());
+	//rooms_list->Show();
+	set_rlist();
 }
 
 void main_frame::show_plist(wxCommandEvent &event)
 {
-	list_frame *participants_list = new list_frame(this, wxID_ANY, wxT("Participants list"), tb->client.get_participants_list());
-	participants_list->Show();
+	//list_frame *participants_list = new list_frame(this, wxID_ANY, wxT("Participants list"), tb->client.get_participants_list());
+	//participants_list->Show();
+	set_plist();
+}
+
+void main_frame::set_rlist()
+{
+	rooms_list->Clear();
+	for (auto p : tb->client.get_rooms_list())
+	{
+		rooms_list->Append(wxString::FromUTF8(p.second.data()));
+	}
+}
+
+void main_frame::set_plist()
+{
+	participants_list->Clear();
+	for (auto p : tb->client.get_participants_list())
+	{
+		participants_list->Append(wxString::FromUTF8(p.second.data()));
+	}
 }
 
 void main_frame::context_verified_true_()
 {
 	Debug("Verification: true");
-	verify_lbl->SetLabel("Verified certificate!");
+	statusbar->SetStatusText("Verified certificate!", 1);
 }
 
 void main_frame::context_verified_false_()
 {
 	Debug("Verification: false");
-	verify_lbl->SetLabel("Not verified certificate!");
+	statusbar->SetStatusText("Not verified certificate!", 1);
 }
 
 BEGIN_EVENT_TABLE(main_frame, wxFrame)

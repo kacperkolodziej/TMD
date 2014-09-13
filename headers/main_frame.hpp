@@ -16,13 +16,13 @@ class main_frame :
 		wxPanel *panel;
 		chat_notebook *notebook;
 		wxTextCtrl *msg, *connect_host, *connect_port;
+		wxStatusBar *statusbar;
 		wxString last_msg_content;
 		wxButton *connect_button;
-		wxBoxSizer *sizer;
-		wxBoxSizer *connect_sizer;
+		wxBoxSizer *main_sizer, *connect_sizer, *cols_sizer, *msg_sizer;
 		wxGridSizer *info_sizer;
+		wxListBox *rooms_list, *participants_list;
 		wxMenuBar *menubar;
-		wxStaticText *conn_lbl, *verify_lbl;
 
 		bool connected;
 		bool verified;
@@ -54,6 +54,8 @@ class main_frame :
 
 		void show_rlist(wxCommandEvent &);
 		void show_plist(wxCommandEvent &);
+		void set_rlist();
+		void set_plist();
 
 	private:
 		DECLARE_EVENT_TABLE();
