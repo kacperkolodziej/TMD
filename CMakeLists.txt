@@ -16,7 +16,6 @@ include_directories(
 	"${Boost_INCLUDE_DIR}"
 	"${OPENSSL_INCLUDE_DIR}"
 	"${PROJECT_SOURCE_DIR}/headers"
-	"${PROJECT_SOURCE_DIR}/resources"
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG bin/Debug)
