@@ -178,15 +178,11 @@ void main_frame::key_up()
 
 void main_frame::show_rlist(wxCommandEvent &event)
 {
-	//list_frame *rooms_list = new list_frame(this, wxID_ANY, wxT("Rooms list"), tb->client.get_rooms_list());
-	//rooms_list->Show();
 	set_rlist();
 }
 
 void main_frame::show_plist(wxCommandEvent &event)
 {
-	//list_frame *participants_list = new list_frame(this, wxID_ANY, wxT("Participants list"), tb->client.get_participants_list());
-	//participants_list->Show();
 	set_plist();
 }
 
@@ -195,7 +191,7 @@ void main_frame::rooms_dbclicked(wxCommandEvent &event)
 	int sel = rooms_list->GetSelection();
 	wxString room = rooms_list->GetString(sel);
 	std::stringstream stream;
-	stream << "/room \"" << room.ToStdString() << "\"";
+	stream << "/room \"" << std::string(room.ToUTF8()) << "\"";
 	std::string msg = stream.str();
 	tb->client.send_message(msg);
 }

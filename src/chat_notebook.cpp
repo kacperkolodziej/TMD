@@ -87,7 +87,7 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 			break;
 
 		case tamandua::message_type::group_enter_message:
-			new_tab(msg.header.group, msg.body);
+			new_tab(msg.header.group, wxString::FromUTF8(msg.body.data()));
 			break;
 
 		case tamandua::message_type::group_leave_message:
