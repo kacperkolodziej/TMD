@@ -16,6 +16,7 @@ void tamandua_textctrl::add_message(wxString author, wxString msg)
 	WriteText(": ");
 	WriteText(msg);
 	Nl();
+	ScrollIntoView(GetLastPosition(), WXK_END);
 	write_lock_.unlock();
 }
 
@@ -29,6 +30,7 @@ void tamandua_textctrl::add_info(wxString info)
 	EndBold();
 	EndColour();
 	Nl();
+	ScrollIntoView(GetLastPosition(), WXK_END);
 	write_lock_.unlock();
 }
 
@@ -42,6 +44,7 @@ void tamandua_textctrl::add_error(wxString error)
 	EndItalic();
 	EndColour();
 	Nl();
+	ScrollIntoView(GetLastPosition(), WXK_END);
 	write_lock_.unlock();
 }
 
@@ -53,6 +56,7 @@ void tamandua_textctrl::add_warning(wxString warning)
 	WriteText(warning);
 	EndColour();
 	Nl();
+	ScrollIntoView(GetLastPosition(), WXK_END);
 	write_lock_.unlock();
 }
 
@@ -69,5 +73,6 @@ void tamandua_textctrl::add_private_message(bool mymsg, wxString author, wxStrin
 	EndColour();
 	WriteText(pm);
 	Nl();
+	ScrollIntoView(GetLastPosition(), WXK_END);
 	write_lock_.unlock();
 }
