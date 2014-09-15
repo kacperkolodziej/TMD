@@ -9,7 +9,7 @@ void chat_notebook::init_tabs()
 
 void chat_notebook::new_tab(tamandua::id_number_t group_id, wxString title)
 {
-	tab_elements tab(group_id);
+	tab_elements tab(group_id, title);
 	tab.panel = new wxPanel(this);
 	tab.sizer = new wxBoxSizer(wxVERTICAL);
 	tab.panel->SetSizer(tab.sizer);
@@ -72,10 +72,12 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 	{
 		case tamandua::message_type::standard_message:
 			tab.msgs->add_message(wxString::FromUTF8(author.data()), wxString::FromUTF8(msg.body.data()));
+			mark_tab_unread_(tab);
 			break;
 
 		case tamandua::message_type::error_message:
 			tab.msgs->add_error(wxString::FromUTF8(msg.body.data()));
+			mark_tab_unread_(tab);
 			break;
 
 		case tamandua::message_type::info_message:
@@ -84,6 +86,7 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 
 		case tamandua::message_type::warning_message:
 			tab.msgs->add_warning(wxString::FromUTF8(msg.body.data()));
+			mark_tab_unread_(tab);
 			break;
 
 		case tamandua::message_type::group_enter_message:
@@ -92,6 +95,7 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 
 		case tamandua::message_type::group_leave_message:
 			remove_tab(msg.header.group);
+			break;
 
 		default:
 			Debug("Unsupported message type: ", msg.header.type);
@@ -115,6 +119,21 @@ void chat_notebook::prev_tab()
 	msg_input->SetFocus();
 }
 
+void chat_notebook::refresh_page_name(wxBookCtrlEvent &evt)
+{
+	int sel = evt.GetSelection();
+	if (sel == wxNOT_FOUND)
+		return;
+
+	auto it = groups_ids_.find(sel);
+	if (it == groups_ids_.end())
+		return;
+
+	auto tab_it = tabs_.find((*it).second);
+	tab_elements &tab = (*tab_it).second;
+	SetPageText(tab.tab_index, tab.name);
+}
+
 void chat_notebook::refresh_ids_()
 {
 	for (auto t : tabs_)
@@ -127,3 +146,15 @@ void chat_notebook::refresh_ids_()
 		groups_ids_.insert(std::make_pair(p.second.tab_index, p.second.group_id));
 	}
 }
+
+void chat_notebook::mark_tab_unread_(chat_notebook::tab_elements tab)
+{
+	if (GetSelection() != tab.tab_index)
+	{
+		SetPageText(tab.tab_index, wxString(wxT("* ")) + tab.name);
+	}
+}
+
+BEGIN_EVENT_TABLE(chat_notebook, wxNotebook)
+	EVT_NOTEBOOK_PAGE_CHANGED(wxID_ANY, chat_notebook::refresh_page_name)
+END_EVENT_TABLE()

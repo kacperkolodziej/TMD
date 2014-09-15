@@ -75,9 +75,19 @@ void main_frame::connect(wxCommandEvent &event)
 
 	tb = new tamandua_box;
 	tb->client.add_event_handler(tamandua::event_type::connecting_succeeded,
-		std::bind(&main_frame::connect_callback_, this, std::placeholders::_1));
+	[this](tamandua::status st)
+	{
+		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(
+			std::bind(&main_frame::connect_callback_, this, st)
+		);
+	});
 	tb->client.add_event_handler(tamandua::event_type::connecting_failed,
-		std::bind(&main_frame::connect_callback_, this, std::placeholders::_1));
+	[this](tamandua::status st)
+	{
+		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(
+			std::bind(&main_frame::connect_callback_, this, st)
+		);
+	});
 	tb->client.add_event_handler(tamandua::event_type::participants_list_received,
 		[this](tamandua::status) {
 			set_plist();

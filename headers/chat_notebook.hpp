@@ -14,13 +14,15 @@ class chat_notebook :
 		struct tab_elements
 		{
 			tamandua::id_number_t group_id;
+			wxString name;
 			int tab_index;
 			wxPanel *panel;
 			wxBoxSizer *sizer;
 			tamandua_textctrl *msgs;
 
-			tab_elements(tamandua::id_number_t gr_id = 0) :
+			tab_elements(tamandua::id_number_t gr_id = 0, wxString n = wxEmptyString) :
 				group_id(gr_id),
+				name(n),
 				tab_index(-1),
 				panel(nullptr),
 				sizer(nullptr),
@@ -48,8 +50,13 @@ class chat_notebook :
 		void next_tab();
 		void prev_tab();
 
+		void refresh_page_name(wxBookCtrlEvent &);
+
 	private:
 		void refresh_ids_();
+		void mark_tab_unread_(tab_elements);
+
+		DECLARE_EVENT_TABLE();
 };
 
 #endif
