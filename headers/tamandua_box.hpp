@@ -9,8 +9,7 @@
 
 struct tamandua_box
 {
-	boost::asio::io_service io_service;
-	std::thread reader_thread, io_service_thread;
+	std::thread reader_thread;
 	std::mutex running_lock;
 	boost::asio::ssl::context context;
 	tamandua::client client;
@@ -18,7 +17,7 @@ struct tamandua_box
 
 	tamandua_box() :
 		context(boost::asio::ssl::context::sslv23),
-		client(io_service, context),
+		client(context),
 		running(true)
 	{
 		context.load_verify_file("ssl/TamanduaCA.pem");

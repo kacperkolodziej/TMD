@@ -49,22 +49,20 @@ class main_frame :
 		void disconnect(wxCommandEvent &);
 		void connect_callback_(tamandua::status);
 		void disconnect_callback_(tamandua::status);
-
+		void reader_thread_function();
+		
+		void context_verified_true();
+		void context_verified_false();
+	
 		void key_page_up();
 		void key_page_down();
 		void key_up();
-
-		void show_rlist(wxCommandEvent &);
-		void show_plist(wxCommandEvent &);
 		void rooms_dbclicked(wxCommandEvent &);
 		void set_rlist();
 		void set_plist();
 
 	private:
 		DECLARE_EVENT_TABLE();
-
-		void context_verified_true_();
-		void context_verified_false_();
 
 };
 

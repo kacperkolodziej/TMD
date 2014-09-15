@@ -107,25 +107,6 @@ void main_frame::connect(wxCommandEvent &event)
 	
 	tb->client.connect(host, port);
 	
-	if (verified)
-		context_verified_true_();
-	else
-		context_verified_false_();
-
-	tb->io_service_thread = std::thread([this]() {
-		tb->io_service.run();
-	});
-	tb->reader_thread = std::thread([this]() {
-		tamandua::client &cl = tb->client;
-		bool local_running = true;
-		do {
-			auto msg_pair = cl.get_next_message();
-			wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&chat_notebook::add_message, notebook, msg_pair));
-			tb->running_lock.lock();
-			local_running = tb->running;
-			tb->running_lock.unlock();
-		} while (local_running);
-	});
 }
 
 void main_frame::disconnect(wxCommandEvent &event)
@@ -134,7 +115,6 @@ void main_frame::disconnect(wxCommandEvent &event)
 	{
 		tb->client.disconnect();
 		tb->turn_off();
-		tb->io_service_thread.join();
 		tb->reader_thread.join();
 		disconnect_callback_(tamandua::ok);
 	}
@@ -144,6 +124,13 @@ void main_frame::connect_callback_(tamandua::status st)
 {
 	if (st == tamandua::status::ok)
 	{
+		if (verified)
+			context_verified_true();
+		else
+			context_verified_false();
+
+		tb->reader_thread = std::thread(std::bind(&main_frame::reader_thread_function, this));
+
 		connected = true;
 		connect_button->Unbind(wxEVT_BUTTON, &main_frame::connect, this);
 		connect_button->Bind(wxEVT_BUTTON, &main_frame::disconnect, this);
@@ -166,6 +153,18 @@ void main_frame::disconnect_callback_(tamandua::status st)
 	}
 }
 
+void main_frame::reader_thread_function()
+{
+	bool local_running = true;
+	do {
+		auto msg_pair = tb->client.get_next_message();
+		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(std::bind(&chat_notebook::add_message, notebook, msg_pair));
+		tb->running_lock.lock();
+		local_running = tb->running;
+		tb->running_lock.unlock();
+	} while (local_running);
+}
+
 void main_frame::key_page_up()
 {
 	notebook->next_tab();
@@ -179,16 +178,6 @@ void main_frame::key_page_down()
 void main_frame::key_up()
 {
 	msg->SetValue(last_msg_content);
-}
-
-void main_frame::show_rlist(wxCommandEvent &event)
-{
-	set_rlist();
-}
-
-void main_frame::show_plist(wxCommandEvent &event)
-{
-	set_plist();
 }
 
 void main_frame::rooms_dbclicked(wxCommandEvent &event)
@@ -219,22 +208,18 @@ void main_frame::set_plist()
 	}
 }
 
-void main_frame::context_verified_true_()
+void main_frame::context_verified_true()
 {
-	Debug("Verification: true");
 	statusbar->SetStatusText("Verified certificate!", 1);
 }
 
-void main_frame::context_verified_false_()
+void main_frame::context_verified_false()
 {
-	Debug("Verification: false");
 	statusbar->SetStatusText("Not verified certificate!", 1);
 }
 
 BEGIN_EVENT_TABLE(main_frame, wxFrame)
 	EVT_TEXT_ENTER(MSG_CTRL, main_frame::send_message)
 	EVT_BUTTON(CON_BTN, main_frame::connect)
-	EVT_MENU(TMD_MENU_RLIST, main_frame::show_rlist)
-	EVT_MENU(TMD_MENU_PLIST, main_frame::show_plist)
 	EVT_LISTBOX_DCLICK(LISTBOX_ROOMS, main_frame::rooms_dbclicked)
 END_EVENT_TABLE()
