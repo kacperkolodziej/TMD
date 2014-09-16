@@ -74,25 +74,25 @@ void main_frame::connect(wxCommandEvent &event)
 	std::string port(connect_port->GetValue().utf8_str());
 
 	tb = new tamandua_box;
-	tb->client.add_event_handler(tamandua::event_type::connecting_succeeded,
+	tb->client.add_event_handler(tamandua::client::connecting_succeeded,
 	[this](tamandua::status st)
 	{
 		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(
 			std::bind(&main_frame::connect_callback_, this, st)
 		);
 	});
-	tb->client.add_event_handler(tamandua::event_type::connecting_failed,
+	tb->client.add_event_handler(tamandua::client::connecting_failed,
 	[this](tamandua::status st)
 	{
 		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(
 			std::bind(&main_frame::connect_callback_, this, st)
 		);
 	});
-	tb->client.add_event_handler(tamandua::event_type::participants_list_received,
+	tb->client.add_event_handler(tamandua::client::participants_list_received,
 		[this](tamandua::status) {
 			set_plist();
 		});
-	tb->client.add_event_handler(tamandua::event_type::rooms_list_received,
+	tb->client.add_event_handler(tamandua::client::rooms_list_received,
 		[this](tamandua::status) {
 			set_rlist();
 		});
