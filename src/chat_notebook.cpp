@@ -5,6 +5,8 @@
 void chat_notebook::init_tabs()
 {
 	DeleteAllPages();
+	tabs_.clear();
+	groups_ids_.clear();
 }
 
 void chat_notebook::new_tab(tamandua::id_number_t group_id, wxString title)

@@ -115,8 +115,8 @@ void main_frame::connect(wxCommandEvent &event)
 		return pv;
 	});
 	
+	notebook->init_tabs();
 	tb->client.connect(host, port);
-	
 }
 
 void main_frame::disconnect(wxCommandEvent &event)
