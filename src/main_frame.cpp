@@ -11,7 +11,7 @@
 wxDECLARE_APP(gui_client);
 
 main_frame::main_frame() :
-	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(600,800)),
+	wxFrame(0, wxID_ANY, wxT("Tamandua GUI Client"), wxPoint(100,100), wxSize(780,900)),
 	connected(false),
 	verified(true)
 {
@@ -38,7 +38,7 @@ main_frame::main_frame() :
 	main_sizer->Add(cols_sizer, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 10);
 
 	cols_sizer->Add(rooms_list, 2, wxALL | wxEXPAND, 5);
-	cols_sizer->Add(msg_sizer, 6, wxALL | wxEXPAND, 5);
+	cols_sizer->Add(msg_sizer, 5, wxALL | wxEXPAND, 5);
 	cols_sizer->Add(participants_list, 2, wxALL | wxEXPAND, 5);
 	msg_sizer->Add(notebook, 3, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 5);
 	msg_sizer->Add(msg, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 5);
