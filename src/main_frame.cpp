@@ -117,6 +117,10 @@ void main_frame::connect(wxCommandEvent &event)
 	
 	notebook->init_tabs();
 	tb->client.connect(host, port);
+
+	wxString lbl = wxT("Connecting... Please wait...");
+	statusbar->SetStatusText(lbl, 0);
+	connect_button->SetLabel(lbl);
 }
 
 void main_frame::disconnect(wxCommandEvent &event)
