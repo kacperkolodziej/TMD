@@ -2,7 +2,7 @@
 #include "debug_gui.hpp"
 
 notification::notification(wxWindow *par, wxWindowID id, wxString title, int time) :
-	wxMiniFrame(NULL, id, title, wxDefaultPosition, wxSize(300,100), wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR),
+	wxMiniFrame(NULL, id, title, wxDefaultPosition, wxSize(300,100), wxCAPTION),
 	parent(par),
 	display_width(0),
 	display_height(0),
@@ -33,7 +33,9 @@ void notification::timer_end(wxTimerEvent &event)
 
 void notification::left_down(wxMouseEvent &event)
 {
+	Debug("klik!");
 	wxMiniFrame::Show(false);
+	parent->Raise();
 }
 
 void notification::calc_position_()

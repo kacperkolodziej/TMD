@@ -62,6 +62,9 @@ class main_frame :
 		void set_rlist();
 		void set_plist();
 
+		bool HasFocus();
+		void SetFocus();
+
 	private:
 		DECLARE_EVENT_TABLE();
 

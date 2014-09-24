@@ -223,6 +223,22 @@ void main_frame::set_plist()
 	}
 }
 
+bool main_frame::HasFocus()
+{
+	wxWindow * focused = wxWindow::FindFocus();
+	if (focused == this ||
+			focused == panel ||
+			focused == msg)
+		return true;
+
+	return false;
+}
+
+void main_frame::SetFocus()
+{
+	msg->SetFocus();
+}
+
 void main_frame::context_verified_true()
 {
 	statusbar->SetStatusText("Verified certificate!", 1);

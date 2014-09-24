@@ -40,8 +40,12 @@ class chat_notebook :
 		chat_notebook(wxWindow *p, wxWindowID id, wxTextCtrl *m) :
 			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM),
 			msg_input(m),
-			newmsg_notify(new notification(wxTheApp->GetTopWindow(), wxID_ANY, wxT("New message"), 4500))
+			newmsg_notify(new notification(wxTheApp->GetTopWindow(), wxID_ANY, wxT("TMD communicator"), 4500))
 		{}
+		~chat_notebook()
+		{
+			newmsg_notify->Close();
+		}
 
 		void init_tabs();
 		void new_tab(tamandua::id_number_t, wxString);
