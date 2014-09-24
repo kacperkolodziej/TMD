@@ -72,7 +72,6 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 	if (reinterpret_cast<gui_client*>(wxTheApp)->GetMainFrame()->HasFocus() == false)
 	{
 		newmsg_notify->Show(wxT("You have new message"));
-		parent->Raise();
 	}
 
 	tab_elements tab = get_tab(msg.header.group);
