@@ -7,6 +7,7 @@
 #include "gui_client.hpp"
 #include "tamandua_box.hpp"
 #include "list_frame.hpp"
+#include "notification.hpp"
 #include <initializer_list>
 
 class main_frame :

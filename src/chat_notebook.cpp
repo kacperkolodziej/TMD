@@ -68,6 +68,9 @@ void chat_notebook::add_message(std::pair<std::string, tamandua::message> msg_pa
 	tamandua::message &msg = msg_pair.second;
 	Debug("Received message of type: ", msg.header.type, ". Content: ", msg.body);
 
+	if (wxTheApp->GetTopWindow()->HasFocus() == false)
+		newmsg_notify->Show(wxT("You have new message"));
+
 	tab_elements tab = get_tab(msg.header.group);
 
 	switch (msg.header.type)

@@ -1,6 +1,7 @@
 #include "main_frame.hpp"
 #include "wx/app.h"
 #include "wx/mstream.h"
+#include "wx/notifmsg.h"
 #include "tamandua/tamandua.hpp"
 #include "tamandua_box.hpp"
 #include "debug_gui.hpp"

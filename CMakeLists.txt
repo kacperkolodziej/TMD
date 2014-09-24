@@ -31,12 +31,14 @@ add_executable(${EXEC_NAME}
 	headers/tamandua_box.hpp
 	headers/chat_notebook.hpp
 	headers/list_frame.hpp
+	headers/notification.hpp
 	src/debug_gui.cpp
 	src/gui_client.cpp
 	src/main_frame.cpp
 	src/tamandua_textctrl.cpp
 	src/chat_notebook.cpp
 	src/list_frame.cpp
+	src/notification.cpp
 	main.cpp
 )
 target_link_libraries("${EXEC_NAME}" "${wxWidgets_LIBRARIES}" "${OPENSSL_LIBRARIES}" "${Boost_LIBRARIES}" tamandua)

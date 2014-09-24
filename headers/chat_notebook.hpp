@@ -3,6 +3,7 @@
 #include "wx/wx.h"
 #include "wx/notebook.h"
 #include "tamandua_textctrl.hpp"
+#include "notification.hpp"
 #include "tamandua.hpp"
 #include <map>
 #include <memory>
@@ -33,11 +34,13 @@ class chat_notebook :
 		std::map<int, tamandua::id_number_t> groups_ids_;
 
 		wxTextCtrl *msg_input;
+		notification *newmsg_notify;
 
 	public:
 		chat_notebook(wxWindow *p, wxWindowID id, wxTextCtrl *m) :
 			wxNotebook(p, id, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM),
-			msg_input(m)
+			msg_input(m),
+			newmsg_notify(new notification(wxTheApp->GetTopWindow(), wxID_ANY, wxT("New message"), 4500))
 		{}
 
 		void init_tabs();
