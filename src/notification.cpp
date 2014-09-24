@@ -33,7 +33,6 @@ void notification::timer_end(wxTimerEvent &event)
 
 void notification::left_down(wxMouseEvent &event)
 {
-	Debug("klik!");
 	wxMiniFrame::Show(false);
 	parent->Raise();
 }

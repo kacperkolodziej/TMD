@@ -225,10 +225,10 @@ void main_frame::set_plist()
 
 bool main_frame::HasFocus()
 {
-	wxWindow * focused = wxWindow::FindFocus();
-	if (focused == this ||
-			focused == panel ||
-			focused == msg)
+	if (wxFrame::HasFocus() ||
+			panel->HasFocus() ||
+			msg->HasFocus()
+			)
 		return true;
 
 	return false;
